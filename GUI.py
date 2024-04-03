@@ -121,10 +121,20 @@ class mainwindow(QMainWindow):
 
     def data_len_get(self):
         if self.ui.data_len.text() == "":
-            return 12000
+            return 1200
         else:
             return int(self.ui.data_len.text())
 
+    def f_repeat_get(self):
+        if self.ui.f_repeat.text() == "":
+            return 1000
+        else:
+            return int(self.ui.f_repeat.text())
+    def ampl_get(self):
+        if self.ui.data_amp.text() == "":
+            return 1.0
+        else:
+            return float(self.ui.data_amp.text())
     def expr_get(self):
         if self.ui.expr_plainTextEdit.toPlainText() == "":
             return "sin(2*pi*x)"
@@ -142,25 +152,13 @@ class mainwindow(QMainWindow):
         L = self.data_len_get()
         print("Before Substitution : {}".format(expr))
         x_values = np.linspace(xmin, xmax-1/L, L)
+        global y_values
         y_values = [expr.subs('x', i) for i in x_values]
         self.ui.mplwidget.canvas.axes.clear()
         self.ui.mplwidget.canvas.axes.plot(x_values, y_values)
         self.ui.mplwidget.canvas.axes.set_xlabel('x')
         self.ui.mplwidget.canvas.axes.set_xlabel('y')
         self.ui.mplwidget.canvas.draw()
-
-    def data_gen(self):
-        f_fact = 1e3/self.f_repeat_get()
-        L = self.data_len_get()
-        x_ = np.linspace(0, 1-1/L, L)
-        a = self.a_get()
-        f_list = np.linspace(self.f_start_get(),
-                             self.f_end_get(), self.f_num_get())*f_fact
-        sum_ = np.zeros(L)
-        for i in range(self.f_num_get()):
-            sum_ = sum_+a[i]*np.cos(2*PI*(f_list[i]*x_)+phi[i])
-        sum_ = sum_/np.max(np.abs(sum_))*32767
-        return sum_.astype(int)
 
     def save_click(self):
         self.file_name, __ = QFileDialog.getSaveFileName(
@@ -169,7 +167,7 @@ class mainwindow(QMainWindow):
             QMessageBox.information(self, "提示", "没有保存数据,请重新保存。")  # 调用弹窗提示
             return self.file_name
         else:
-            wave_data = self.data_gen()
+            wave_data = y_values
             # test_points = np.linspace(-1, 1, L)*32767
             # test_wave_data = test_points.astype(int)
             wave_file_create(self.file_name, wave_data)
@@ -203,8 +201,7 @@ class mainwindow(QMainWindow):
         self.ui.update_state.setText("上传状态:上传中...")
         if (self.ui.bin_checkBox.isChecked()):
             try:
-                temp_data = self.data_gen()
-                wave_file_create("./temp.bin", temp_data)
+                wave_file_create("./temp.bin", y_values)
                 f = open("./temp.bin", "rb")
                 data = f.read().decode("latin1")
                 f.close()
@@ -212,19 +209,6 @@ class mainwindow(QMainWindow):
                 self.ui.update_state.setText("上传状态:上传完毕")
             except:
                 self.ui.update_state.setText("上传状态:出错")
-            '''
-            data = []
-            for a in temp_data:
-                data.append(binascii.unhexlify(fill_16(d2inth(int(a), 16))))
-            data = str(data)
-            data = "".join(data)
-            # data = bytes(data, encoding="latin1")
-            print('data class:', type(data))
-            try:
-                wave_data_send(dev, CH, data, data_name, freq, ampl)
-            except:
-                print("upload error")
-            '''
         else:
             try:
                 data = self.data
