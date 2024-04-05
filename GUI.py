@@ -11,7 +11,6 @@ import binascii
 import pyvisa as visa
 import time
 matplotlib.use('Qt5Agg')
-# 使用 matplotlib中的FigureCanvas (在使用 Qt5 Backends中 FigureCanvas继承自QtWidgets.QWidget)
 PI = 3.14159265
 
 
@@ -104,14 +103,16 @@ class mainwindow(QMainWindow):
         self.ui.CH_out_pushButton_2.clicked.connect(self.CH_off_click)
         dev_list = dev_list_get()
         self.ui.dev_comboBox.addItems(dev_list)
-
-        rm = visa.ResourceManager()
-        device_resource = self.ui.dev_comboBox.currentText()
-        dev = rm.open_resource(
-            device_resource, timeout=50000, chunk_size=1*1024)
-        # 默认50欧输出
-        dev.write("C1:OUTP LOAD,50")
-        dev.write("C2:OUTP LOAD,50")
+        if len(dev_list)<=0 :
+            print("There is no devs")
+        else:
+            rm = visa.ResourceManager()
+            device_resource = self.ui.dev_comboBox.currentText()
+            dev = rm.open_resource(
+                device_resource, timeout=50000, chunk_size=1*1024)
+            # 默认50欧输出
+            dev.write("C1:OUTP LOAD,50")
+            dev.write("C2:OUTP LOAD,50")
 
     def CH_get(self):
         if self.ui.CH_comboBox.currentText() == "CH1":
