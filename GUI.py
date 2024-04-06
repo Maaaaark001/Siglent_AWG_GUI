@@ -5,13 +5,11 @@ import matplotlib
 import sys
 from PyQt5.QtWidgets import *
 import numpy as np
-import sympy as sp
-from sympy.parsing.sympy_parser import parse_expr
 import binascii
 import pyvisa as visa
 import time
+from math import *
 matplotlib.use('Qt5Agg')
-PI = 3.14159265
 
 
 def d2intb(decimal_num, num_bits):
@@ -143,23 +141,21 @@ class mainwindow(QMainWindow):
             return self.ui.expr_plainTextEdit.toPlainText()
 
     def calc_handel_click(self):
-
-        x = sp.Symbol('x')
-        pi = sp.Symbol('pi')
-        expr_str = self.expr_get()
-        expr = parse_expr(expr_str, evaluate=False)
-
         xmin, xmax = 0, 1
-        L = self.data_len_get()
-        print("Before Substitution : {}".format(expr))
-        x_values = np.linspace(xmin, xmax-1/L, L)
-        global y_values
-        y_values = [expr.subs('x', i) for i in x_values]
-        self.ui.mplwidget.canvas.axes.clear()
-        self.ui.mplwidget.canvas.axes.plot(x_values, y_values)
-        self.ui.mplwidget.canvas.axes.set_xlabel('x')
-        self.ui.mplwidget.canvas.axes.set_xlabel('y')
-        self.ui.mplwidget.canvas.draw()
+        try:
+            L = self.data_len_get()
+            x_values = np.linspace(xmin, xmax-1/L, L)
+            expr_str = self.expr_get()
+            y_values = []
+            for x in x_values:
+                y_values.append(eval(expr_str))
+            self.ui.mplwidget.canvas.axes.clear()
+            self.ui.mplwidget.canvas.axes.plot(x_values, y_values)
+            self.ui.mplwidget.canvas.axes.set_xlabel('x')
+            self.ui.mplwidget.canvas.axes.set_xlabel('y')
+            self.ui.mplwidget.canvas.draw()
+        except:
+            QMessageBox.information(self, "提示", "表达式可能错误")
 
     def save_click(self):
         self.file_name, __ = QFileDialog.getSaveFileName(

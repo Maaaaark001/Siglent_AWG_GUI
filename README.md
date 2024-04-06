@@ -8,7 +8,6 @@
 4. pyvisa
 5. numpy
 6. matplotlib
-7. sympy
 
 ## 文件结构树
 ```
