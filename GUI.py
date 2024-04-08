@@ -54,6 +54,7 @@ def h2ascii(hex16):
 
 def wave_file_create(file_name, wave_data):
     f = open(file_name, "wb")
+    wave_data=wave_data/np.max(np.abs(wave_data))*32767
     for a in wave_data:
         f.write(h2ascii(fill_16(d2inth(int(a), 16))))
     f.close
@@ -146,6 +147,7 @@ class mainwindow(QMainWindow):
             L = self.data_len_get()
             x_values = np.linspace(xmin, xmax-1/L, L)
             expr_str = self.expr_get()
+            global y_values
             y_values = []
             for x in x_values:
                 y_values.append(eval(expr_str))
@@ -164,10 +166,7 @@ class mainwindow(QMainWindow):
             QMessageBox.information(self, "提示", "没有保存数据,请重新保存。")  # 调用弹窗提示
             return self.file_name
         else:
-            wave_data = y_values
-            # test_points = np.linspace(-1, 1, L)*32767
-            # test_wave_data = test_points.astype(int)
-            wave_file_create(self.file_name, wave_data)
+            wave_file_create(self.file_name, y_values)
             print("save file_name:"+self.file_name)
             self.ui.save_filename.setText(self.file_name)
             return self.file_name
@@ -208,8 +207,7 @@ class mainwindow(QMainWindow):
                 self.ui.update_state.setText("上传状态:出错")
         else:
             try:
-                data = self.data
-                wave_data_send(dev, CH, data, data_name, freq, ampl)
+                wave_data_send(dev, CH, self.data, data_name, freq, ampl)
                 self.ui.update_state.setText("上传状态:上传完毕")
             except:
                 print("date error")
