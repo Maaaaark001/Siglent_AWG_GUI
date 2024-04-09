@@ -154,13 +154,17 @@ class mainwindow(QMainWindow):
         else:
             return int(self.ui.f_repeat.text())
     def ampl_get(self):
-        if self.ui.data_amp.text() == "":
+        amp_=self.ui.data_amp.text()
+        if amp_ == "":
             return 1.0
-        elif float(self.ui.data_amp.text())<0:
+        elif float(amp_)<0:
             QMessageBox.information(self, "提示", "幅值大于等于0")
             return 1.0
+        elif float(amp_)>4:
+            QMessageBox.information(self, "提示", "幅值不超过4")
+            return 4
         else:
-            return float(self.ui.data_amp.text())
+            return float(amp_)
     def expr_get(self):
         if self.ui.expr_plainTextEdit.toPlainText() == "":
             return "sin(2*pi*x)"
