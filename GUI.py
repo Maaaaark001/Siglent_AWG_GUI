@@ -82,6 +82,23 @@ def wave_data_send(dev, CH, data, data_name, freq, ampl):
     dev.write(CH+":ARWV NAME,"+data_name)
     print("Stop..............")
 
+def wave_data_get(dev):
+    #暂未验证
+    dev.read_termination = ''
+    f = open("temp_get.bin", "wb")
+    # dev.write("WVDT? M1")    #"X" series (SDG1000X/SDG2000X/SDG6000X/X-E)
+    dev.write("WVDT? USER, urat")
+    time.sleep(1)
+    data = dev.read(encoding='latin1')
+    print("data length=",len(data))
+    data_pos = data.find("WAVEDATA,") + len("WAVEDATA,")
+    print('pos::::',data_pos)
+    #print( data[0:data_pos])
+    wave_data = data[data_pos:-1]
+    print('read bytes:',len(wave_data))
+    f.write(wave_data.encode('latin1'))
+    f.close()
+    return wave_data
 
 class mainwindow(QMainWindow):
 
@@ -122,16 +139,25 @@ class mainwindow(QMainWindow):
     def data_len_get(self):
         if self.ui.data_len.text() == "":
             return 1200
+        elif int(self.ui.data_len.text())<0:
+            QMessageBox.information(self, "提示", "数据长度大于等于0")
+            return 1200
         else:
             return int(self.ui.data_len.text())
 
     def f_repeat_get(self):
         if self.ui.f_repeat.text() == "":
             return 1000
+        elif int(self.ui.f_repeat.text())<0:
+            QMessageBox.information(self, "提示", "重复频率大于等于0")
+            return 1000
         else:
             return int(self.ui.f_repeat.text())
     def ampl_get(self):
         if self.ui.data_amp.text() == "":
+            return 1.0
+        elif float(self.ui.data_amp.text())<0:
+            QMessageBox.information(self, "提示", "幅值大于等于0")
             return 1.0
         else:
             return float(self.ui.data_amp.text())
