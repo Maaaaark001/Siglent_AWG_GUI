@@ -8,6 +8,7 @@ import numpy as np
 import binascii
 import pyvisa as visa
 import time
+import struct
 from math import *
 matplotlib.use('Qt5Agg')
 
@@ -51,6 +52,14 @@ def fill_16(hexnum):
 def h2ascii(hex16):
     return binascii.unhexlify(hex16)
 
+def read_unpack(data_str):
+    L=len(data_str)
+    int_val=[]
+    data_str=data_str.encode("latin1")
+    for i in range(L//2):
+        a_str=data_str[i*2:i*2+2]
+        int_val.append(struct.unpack("<h", a_str)[0])
+    return int_val
 
 def wave_file_create(file_name, wave_data):
     f = open(file_name, "wb")
@@ -81,7 +90,6 @@ def wave_data_send(dev, CH, data, data_name, freq, ampl):
     time.sleep(0.5)
     dev.write(CH+":ARWV NAME,"+data_name)
     print("Stop..............")
-
 def wave_data_get(dev):
     #暂未验证
     dev.read_termination = ''
@@ -203,7 +211,7 @@ class mainwindow(QMainWindow):
 
     def read_click(self):
         self.read_file_name, __ = QFileDialog.getOpenFileName(
-            self, "文件保存", "./", "bin文件 (*.bin)")
+            self, "文件读取", "./", "bin文件 (*.bin)")
         if str(self.read_file_name) == "":
             QMessageBox.information(self, "提示", "数据,请重新保存或读取。")  # 调用弹窗提示
             return self.read_file_name
@@ -213,6 +221,12 @@ class mainwindow(QMainWindow):
             f = open(self.read_file_name, "rb")
             self.data = f.read().decode("latin1")
             f.close()
+            show_data=[i/32768 for i in read_unpack(self.data)]
+            self.ui.mplwidget.canvas.axes.clear()
+            self.ui.mplwidget.canvas.axes.plot(np.linspace(0, 1-1/len(show_data), len(show_data)), show_data)
+            self.ui.mplwidget.canvas.axes.set_xlabel('x')
+            self.ui.mplwidget.canvas.axes.set_xlabel('y')
+            self.ui.mplwidget.canvas.draw()
             return self.read_file_name
 
     def upload_click(self):
