@@ -125,6 +125,8 @@ class mainwindow(QMainWindow):
         self.ui.CH2_out_pushButton_2.clicked.connect(self.CH2_off_click)
         self.ui.CH_out_pushButton.clicked.connect(self.CH_out_click)
         self.ui.CH_out_pushButton_2.clicked.connect(self.CH_off_click)
+        self.ui.freq_up_pushButton.clicked.connect(self.freq_up_click)
+        self.ui.amp_up_pushButton.clicked.connect(self.amp_up_click)
         dev_list = dev_list_get()
         self.ui.dev_comboBox.addItems(dev_list)
         if len(dev_list)<=0 :
@@ -305,7 +307,27 @@ class mainwindow(QMainWindow):
             device_resource, timeout=50000, chunk_size=128*128)
         dev.write("C1:OUTP OFF")
         dev.write("C2:OUTP OFF")
+    def freq_up_click(self):
+        rm = visa.ResourceManager()
+        device_resource = self.ui.dev_comboBox.currentText()
+        dev = rm.open_resource(
+            device_resource, timeout=50000, chunk_size=128*128)
+        dev.write_termination = ''
+        CH=self.CH_get()
+        freq=str(self.f_repeat_get()*1000)
+        op = CH+":WVDT FREQ,"+freq
+        dev.write(op)
 
+    def amp_up_click(self):
+        rm = visa.ResourceManager()
+        device_resource = self.ui.dev_comboBox.currentText()
+        dev = rm.open_resource(
+            device_resource, timeout=50000, chunk_size=128*128)
+        dev.write_termination = ''
+        CH=self.CH_get()
+        ampl=str(self.ampl_get())
+        op = CH+":WVDT AMPL,"+ampl
+        dev.write(op)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
