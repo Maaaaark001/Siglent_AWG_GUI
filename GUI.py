@@ -12,46 +12,6 @@ import struct
 from math import *
 matplotlib.use('Qt5Agg')
 
-
-def d2intb(decimal_num, num_bits):
-    if decimal_num >= 0:
-        binary_str = bin(decimal_num)[2:].zfill(num_bits)
-    else:
-        positive_value = abs(decimal_num)
-        inverted_value = (1 << num_bits) - positive_value
-        binary_str = bin(inverted_value)[2:]
-    return binary_str
-
-
-def intb2h(binary_str):
-    decimal_num = int(binary_str, 2)
-    hex_str = hex(decimal_num)[2:].upper()
-    return hex_str
-
-
-def d2inth(decimal_num, num_bits):
-    hex_str = intb2h(d2intb(decimal_num, num_bits))
-    return hex_str
-
-
-def fill_16(hexnum):
-    b = hexnum
-    len_b = len(b)
-    if (0 == len_b):
-        b = '0000'
-    elif (1 == len_b):
-        b = '000' + b
-    elif (2 == len_b):
-        b = '00' + b
-    elif (3 == len_b):
-        b = '0' + b
-    b = b[2:4] + b[:2]
-    return b
-
-
-def h2ascii(hex16):
-    return binascii.unhexlify(hex16)
-
 def read_unpack(data_str):
     L=len(data_str)
     int_val=[]
@@ -61,11 +21,14 @@ def read_unpack(data_str):
         int_val.append(struct.unpack("<h", a_str)[0])
     return int_val
 
+def write_pack(a):
+    return struct.pack("<h",int(a))
+
 def wave_file_create(file_name, wave_data):
     f = open(file_name, "wb")
     wave_data=wave_data/np.max(np.abs(wave_data))*32767
     for a in wave_data:
-        f.write(h2ascii(fill_16(d2inth(int(a), 16))))
+        f.write(write_pack(a))
     f.close
 
 
@@ -101,7 +64,7 @@ def wave_data_get(dev):
     print("data length=",len(data))
     data_pos = data.find("WAVEDATA,") + len("WAVEDATA,")
     print('pos::::',data_pos)
-    #print( data[0:data_pos])
+    print( data[0:data_pos])
     wave_data = data[data_pos:-1]
     print('read bytes:',len(wave_data))
     f.write(wave_data.encode('latin1'))
