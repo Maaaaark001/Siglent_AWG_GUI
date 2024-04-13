@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from PyQt5 import QtCore, QtWidgets, QtGui, uic
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from PyQt5 import uic
 import matplotlib
 import sys
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QMessageBox, QFileDialog, QMainWindow, QApplication
 import numpy as np
 import pyvisa as visa
 import time
@@ -40,7 +39,7 @@ def dev_list_get():
     devs = rm.list_resources_info("?*::INSTR")
     out = list(devs.keys())
     if len(out) <= 0:
-        print("There is no devs")
+        print("There is no dev")
     return out
 
 
@@ -106,7 +105,7 @@ class mainwindow(QMainWindow):
         dev_list = dev_list_get()
         self.ui.dev_comboBox.addItems(dev_list)
         if len(dev_list) <= 0:
-            print("There is no devs")
+            print("There is no dev")
         else:
             rm = visa.ResourceManager()
             device_resource = self.ui.dev_comboBox.currentText()
