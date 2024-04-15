@@ -113,6 +113,8 @@ class mainwindow(QMainWindow):
             # 默认50欧输出
             dev.write("C1:OUTP LOAD,50")
             dev.write("C2:OUTP LOAD,50")
+        wvtp_list = ["SINE", "SQUARE", "RAMP", "PULSE", "NOISE", "DC"]
+        self.ui.wvtp_comboBox.addItems(wvtp_list)
 
     def CH_get(self):
         if self.ui.CH_comboBox.currentText() == "CH1":
