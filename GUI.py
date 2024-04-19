@@ -102,6 +102,7 @@ class mainwindow(QMainWindow):
         self.ui.CH_out_pushButton_2.clicked.connect(self.CH_off_click)
         self.ui.freq_up_pushButton.clicked.connect(self.freq_up_click)
         self.ui.amp_up_pushButton.clicked.connect(self.amp_up_click)
+        self.ui.wvtp_set_button.clicked.connect(self.wvtp_set_click)
         dev_list = dev_list_get()
         self.ui.dev_comboBox.addItems(dev_list)
         if len(dev_list) <= 0:
@@ -122,11 +123,17 @@ class mainwindow(QMainWindow):
         else:
             return "C2"
 
+    def CH_get_base(self):
+        if self.ui.CH_comboBox_2.currentText() == "CH1":
+            return "C1"
+        else:
+            return "C2"
+
     def data_len_get(self):
         if self.ui.data_len.text() == "":
             return 1200
-        elif int(self.ui.data_len.text()) < 0:
-            QMessageBox.information(self, "提示", "数据长度大于等于0")
+        elif int(self.ui.data_len.text()) <= 0:
+            QMessageBox.information(self, "提示", "数据长度需大于0")
             return 1200
         else:
             return int(self.ui.data_len.text())
@@ -134,8 +141,8 @@ class mainwindow(QMainWindow):
     def f_repeat_get(self):
         if self.ui.f_repeat.text() == "":
             return 1000
-        elif int(self.ui.f_repeat.text()) < 0:
-            QMessageBox.information(self, "提示", "重复频率大于等于0")
+        elif int(self.ui.f_repeat.text()) <= 0:
+            QMessageBox.information(self, "提示", "重复频率需大于0")
             return 1000
         else:
             return int(self.ui.f_repeat.text())
@@ -144,8 +151,8 @@ class mainwindow(QMainWindow):
         amp_ = self.ui.data_amp.text()
         if amp_ == "":
             return 1.0
-        elif float(amp_) < 0:
-            QMessageBox.information(self, "提示", "幅值大于等于0")
+        elif float(amp_) <= 0:
+            QMessageBox.information(self, "提示", "幅值需大于0")
             return 1.0
         elif float(amp_) > 4:
             QMessageBox.information(self, "提示", "幅值不超过4")
@@ -310,6 +317,17 @@ class mainwindow(QMainWindow):
         ampl = str(self.ampl_get())
         op = CH + ":WVDT AMPL," + ampl
         dev.write(op)
+
+    def wvtp_set_click(self):
+        rm = visa.ResourceManager()
+        device_resource = self.ui.dev_comboBox.currentText()
+        dev = rm.open_resource(device_resource, timeout=50000, chunk_size=128 * 128)
+        dev.write_termination = ""
+        CH = self.CH_get_base()
+        wvtp = self.ui.wvtp_comboBox.currentText()
+        if wvtp == "SINE":
+            op = CH + ":WVDT WVTP,SINE"
+            dev.write(op)
 
 
 if __name__ == "__main__":

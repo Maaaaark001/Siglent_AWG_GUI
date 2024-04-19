@@ -550,7 +550,7 @@
     <rect>
      <x>580</x>
      <y>10</y>
-     <width>321</width>
+     <width>140</width>
      <height>16</height>
     </rect>
    </property>
@@ -562,7 +562,7 @@
    <property name="geometry">
     <rect>
      <x>580</x>
-     <y>580</y>
+     <y>620</y>
      <width>170</width>
      <height>28</height>
     </rect>
@@ -570,6 +570,48 @@
    <property name="text">
     <string>设置基础波形</string>
    </property>
+  </widget>
+  <widget class="QLabel" name="label_13">
+   <property name="geometry">
+    <rect>
+     <x>580</x>
+     <y>70</y>
+     <width>140</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>基础波形选择：</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="CH_comboBox_2">
+   <property name="geometry">
+    <rect>
+     <x>580</x>
+     <y>580</y>
+     <width>170</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="editable">
+    <bool>false</bool>
+   </property>
+   <property name="currentText">
+    <string>CH1</string>
+   </property>
+   <property name="placeholderText">
+    <string/>
+   </property>
+   <item>
+    <property name="text">
+     <string>CH1</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>CH2</string>
+    </property>
+   </item>
   </widget>
  </widget>
  <customwidgets>
