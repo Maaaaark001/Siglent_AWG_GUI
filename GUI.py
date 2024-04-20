@@ -318,6 +318,21 @@ class mainwindow(QMainWindow):
         op = CH + ":WVDT AMPL," + ampl
         dev.write(op)
 
+    # wvtp setup
+    def ampl_get_wvtp(self):
+        ampl = self.ui.ampl_wvtp.value()
+        if ampl == "":
+            return "1"
+        else:
+            return ampl
+
+    def freq_get_wvtp(self):
+        freq = self.ui.freq_wvtp.value()
+        if freq == "":
+            return "1"
+        else:
+            return freq
+
     def wvtp_set_click(self):
         rm = visa.ResourceManager()
         device_resource = self.ui.dev_comboBox.currentText()
@@ -325,8 +340,24 @@ class mainwindow(QMainWindow):
         dev.write_termination = ""
         CH = self.CH_get_base()
         wvtp = self.ui.wvtp_comboBox.currentText()
-        if wvtp == "SINE":
-            op = CH + ":WVDT WVTP,SINE"
+        if wvtp == "SINE" or wvtp == "SQUARE" or wvtp == "RAMP":
+            freq = self.freq_get_wvtp()
+            ampl = self.ampl_get_wvtp()
+            offset = self.offset_get_wvtp()
+            phase = self.phase_get_wvtp()
+            op = (
+                CH
+                + ":WVDT WVTP,"
+                + wvtp
+                + ",FREQ"
+                + freq
+                + ",AMPL"
+                + ampl
+                + ",OFFSET"
+                + offset
+                + ",PHASE"
+                + phase
+            )
             dev.write(op)
 
 
