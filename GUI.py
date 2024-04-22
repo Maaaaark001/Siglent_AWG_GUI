@@ -298,18 +298,53 @@ class mainwindow(QMainWindow):
 
     # wvtp setup
     def ampl_get_wvtp(self):
-        ampl = self.ui.ampl_wvtp.value()
+        ampl = self.ui.ampl_wvtp.text()
         if ampl == "":
             return "1"
         else:
             return ampl
 
     def freq_get_wvtp(self):
-        freq = self.ui.freq_wvtp.value()
+        freq = self.ui.freq_wvtp.text()
         if freq == "":
             return "1"
         else:
             return freq
+
+    def phase_get_wvtp(self):
+        phase = self.ui.phase_wvtp.text()
+        if phase == "":
+            return "0"
+        else:
+            return phase
+
+    def offset_get_wvtp(self):
+        offset = self.ui.offset_wvtp.text()
+        if offset == "":
+            return "0"
+        else:
+            return offset
+
+    def duty_get_wvtp(self):
+        duty = self.ui.duty_wvtp.text()
+        if duty == "":
+            return "50"
+        else:
+            return duty
+
+    def stdev_get_wvtp(self):
+        stdev = self.ui.stdev_wvtp.text()
+        if stdev == "":
+            return "1"
+        else:
+            return stdev
+
+    def mean_get_wvtp(self):
+        mean = self.ui.mean_wvtp.text()
+        if mean == "":
+            return "0"
+        else:
+            return mean
 
     def wvtp_set_click(self):
         rm = visa.ResourceManager()
@@ -318,16 +353,25 @@ class mainwindow(QMainWindow):
         dev.write_termination = ""
         CH = self.CH_get_base()
         wvtp = self.ui.wvtp_comboBox.currentText()
+        dev.write(CH + ":BSWV WVTP," + wvtp)
         if wvtp == "SINE" or wvtp == "SQUARE" or wvtp == "RAMP":
             freq = self.freq_get_wvtp()
             ampl = self.ampl_get_wvtp()
             offset = self.offset_get_wvtp()
             phase = self.phase_get_wvtp()
-            dev.write(CH + ":BSWV WVTP," + wvtp)
+            # 基础波形命令要一条一条发
             dev.write(CH + ":BSWV FRQ," + freq)
             dev.write(CH + ":BSWV AMP," + ampl)
             dev.write(CH + ":BSWV OFST," + offset)
             dev.write(CH + ":BSWV PHSW," + phase)
+            if wvtp == "SQUARE":
+                duty = self.duty_get_wvtp()
+                dev.write(CH + ":BSWV DUTY," + duty)
+        elif wvtp == "NOISE":
+            stdev = self.stdev_get_wvtp()
+            mean = self.mean_get_wvtp()
+            dev.write(CH + ":BSWV STDEV," + stdev)
+            dev.write(CH + ":BSWV MEAN," + mean)
 
 
 if __name__ == "__main__":
