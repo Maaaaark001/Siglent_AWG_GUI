@@ -691,7 +691,7 @@
     <string>噪声标准差</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="phase_wvtp_2">
+  <widget class="QLineEdit" name="stdev_wvtp">
    <property name="geometry">
     <rect>
      <x>580</x>
@@ -728,6 +728,32 @@
    </property>
    <property name="text">
     <string>占空比/%</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_20">
+   <property name="geometry">
+    <rect>
+     <x>580</x>
+     <y>370</y>
+     <width>101</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>噪声平均值</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="mean_wvtp">
+   <property name="geometry">
+    <rect>
+     <x>580</x>
+     <y>390</y>
+     <width>171</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="placeholderText">
+    <string>1</string>
    </property>
   </widget>
  </widget>
