@@ -346,6 +346,20 @@ class mainwindow(QMainWindow):
         else:
             return mean
 
+    def rise_get_wvtp(self):
+        rise = self.ui.rise_wvtp.text()
+        if rise == "":
+            return "0"
+        else:
+            return rise
+
+    def fall_get_wvtp(self):
+        fall = self.ui.fall_wvtp.text()
+        if fall == "":
+            return "0"
+        else:
+            return fall
+
     def wvtp_set_click(self):
         rm = visa.ResourceManager()
         device_resource = self.ui.dev_comboBox.currentText()
@@ -372,6 +386,22 @@ class mainwindow(QMainWindow):
             mean = self.mean_get_wvtp()
             dev.write(CH + ":BSWV STDEV," + stdev)
             dev.write(CH + ":BSWV MEAN," + mean)
+        elif wvtp == "DC":
+            ampl = self.ampl_get_wvtp()
+            dev.write(CH + ":BSWV OFST," + offset)
+        elif wvtp == "pulse":
+            freq = self.freq_get_wvtp()
+            ampl = self.ampl_get_wvtp()
+            offset = self.offset_get_wvtp()
+            duty = self.duty_get_wvtp()
+            rise = self.rise_get_wvtp()
+            fall = self.fall_get_wvtp()
+            dev.write(CH + ":BSWV FRQ," + freq)
+            dev.write(CH + ":BSWV AMP," + ampl)
+            dev.write(CH + ":BSWV OFST," + offset)
+            dev.write(CH + ":BSWV DUTY," + duty)
+            dev.write(CH + ":BSWV RISE," + rise)
+            dev.write(CH + ":BSWV FALL," + fall)
 
 
 if __name__ == "__main__":
