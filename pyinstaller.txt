@@ -1,0 +1,2 @@
+pyinstaller  --onefile  -p mplwidget.py -p GUI.ui --hidden-import sys --hidden-import PyQt5 --hidden-import matplotlib --hidden-import numpy  --hidden-import scipy --hidden-import pyvisa --hidden-import serial --hidden-import time --hidden-import struct --hidden-import math GUI.py
+pyinstaller  -p mplwidget.py -p GUI.ui --hidden-import sys --hidden-import PyQt5 --hidden-import matplotlib --hidden-import numpy  --hidden-import scipy --hidden-import pyvisa --hidden-import serial --hidden-import time --hidden-import struct --hidden-import math GUI.py
